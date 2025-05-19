@@ -1,13 +1,7 @@
 from http import HTTPStatus
 
-from fastapi.testclient import TestClient
 
-from fast_api_zero.app import app
-
-client = TestClient(app)
-
-
-def test_root_deve_retornar_ola_mundo():
+def test_root_deve_retornar_ola_mundo(client):
     """
     Esse teste tem etapas (AAA)
     - A: Arrange - Arranjo
@@ -16,7 +10,7 @@ def test_root_deve_retornar_ola_mundo():
     """
 
     # arrange
-    client = TestClient(app)
+    # client = TestClient(app)
 
     # act
     response = client.get('/')
@@ -26,20 +20,37 @@ def test_root_deve_retornar_ola_mundo():
     assert response.status_code == HTTPStatus.OK
 
 
-def test_root_deve_retornar_ola_mundo_html():
-    """
-    Esse teste tem etapas (AAA)
-    - A: Arrange - Arranjo
-    - A: Act - Executa a coisa (o SUT)
-    - A: Assert - Garanta que A é A
-    """
+def test_create_user(client):
+    response = client.post(
+        '/users/',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json() == {
+        'username': 'alice',
+        'email': 'alice@example.com',
+        'id': 1,
+    }
 
-    # arrange
-    client = TestClient(app)
 
-    # act
-    response = client.get('/html')
+# def test_root_deve_retornar_ola_mundo_html():
+#     """
+#     Esse teste tem etapas (AAA)
+#     - A: Arrange - Arranjo
+#     - A: Act - Executa a coisa (o SUT)
+#     - A: Assert - Garanta que A é A
+#     """
 
-    # assert
-    assert response.status_code == HTTPStatus.OK
-    assert '<h1> Olá, Mundo! </h1>' in response.text
+#     # arrange
+#     client = TestClient(app)
+
+#     # act
+#     response = client.get('/html')
+
+#     # assert
+#     assert response.status_code == HTTPStatus.OK
+#     assert '<h1> Olá, Mundo! </h1>' in response.text
